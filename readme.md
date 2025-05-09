@@ -6,5 +6,6 @@ source .venv/bin/activate
 
 uv init
 
-uv pip install -r pyproject.toml
+uv add langgraph langchain-community
+# uv pip install -r pyproject.toml
 ```
