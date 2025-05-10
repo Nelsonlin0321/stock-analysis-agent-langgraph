@@ -5,7 +5,28 @@ A sophisticated stock analysis agent built using LangGraph and LangChain, design
 ## Architecture and Framework
 
 ### Chosen Framework
-This project utilizes LangGraph as the primary agent framework, which provides a robust foundation for building complex, stateful agent workflows. The architecture is built on top of LangChain, leveraging its extensive tooling and integration capabilities.
+This project leverages the powerful combination of LangGraph and LangChain, chosen specifically for their robust implementation of the ReAct (Reasoning and Acting) agent pattern and advanced error handling capabilities.
+
+#### Why LangChain + LangGraph?
+1. **ReAct Pattern Implementation**:
+   - Enables the agent to reason about problems and take actions in a structured way
+   - Combines reasoning (thinking) and acting (doing) in a single loop
+   - Allows the agent to:
+     - Plan its approach to complex stock analysis tasks
+     - Execute actions based on its reasoning
+     - Learn from outcomes and adjust its strategy
+     - Handle multi-step analysis workflows efficiently
+
+2. **Self-Error Handling**:
+   - Built-in retry mechanisms with exponential backoff
+   - Automatic error recovery and state management
+   - Graceful degradation when services are unavailable
+   - Ability to:
+     - Detect and recover from API failures
+     - Handle data inconsistencies
+     - Maintain state during error recovery
+     - Provide meaningful error feedback
+
 
 ### Architecture Overview
 - **State Management**: Uses LangGraph's `StateGraph` for managing agent state and message flow
@@ -15,22 +36,43 @@ This project utilizes LangGraph as the primary agent framework, which provides a
 ## Agent Operation
 
 ### Planning and Execution
-1. **Task Planning**:
-   - The agent receives user queries and breaks them down into actionable steps
-   - Uses LangGraph's state management to track progress and maintain context
+- Implements a directed graph structure for information processing
+- Maintains state between operations for context preservation
+- Uses message passing for inter-tool communication
 
-2. **Tool Selection**:
-   - Dynamically selects appropriate tools based on the task requirements
-   - Available tools include:
-     - Stock data fetching (yfinance)
-     - Data analysis (pandas)
-     - News aggregation
-     - Technical analysis
-
-3. **Information Flow**:
-   - Implements a directed graph structure for information processing
-   - Maintains state between operations for context preservation
-   - Uses message passing for inter-tool communication
+        +-----------+          
+        | __start__ |          
+        +-----------+          
+               *               
+               *               
+               *               
+  +------------------------+   
+  | data_acquisition_agent |   
+  +------------------------+   
+               .               
+               .               
+               .               
++----------------------------+ 
+| python_data_analysis_agent | 
++----------------------------+ 
+               .               
+               .               
+               .               
+    +---------------------+    
+    | news_research_agent |    
+    +---------------------+    
+               .               
+               .               
+               .               
+      +-----------------+      
+      | reporting_agent |      
+      +-----------------+      
+               .               
+               .               
+               .               
+          +---------+          
+          | __end__ |          
+          +---------+
 
 ### Dynamic Code Generation
 - Generates analysis code based on user requirements
@@ -48,15 +90,6 @@ This project utilizes LangGraph as the primary agent framework, which provides a
    - Maximum retry attempts for failed operations
    - Graceful degradation when services are unavailable
 
-2. **Data Validation**:
-   - Input validation for all user queries
-   - Data integrity checks for stock information
-   - Format verification for generated outputs
-
-3. **Fallback Strategies**:
-   - Alternative data sources when primary sources fail
-   - Caching mechanisms for frequently accessed data
-   - Graceful error messages for user feedback
 
 ## Setup Instructions
 
