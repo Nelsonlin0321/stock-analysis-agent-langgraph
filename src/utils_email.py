@@ -73,9 +73,28 @@ def send_email_gmail(subject: str, body: str, email: str) -> str:
         # Close the connection
         server.quit()
 
-        return f"Email Sent successfully gmail_{msg['Message-ID']}"
+        return f"Email Sent successfully to {email}"
     except Exception as e:
         raise Exception(f"Failed to send email via Gmail: {str(e)}")
+
+
+def send_report_via_email(
+        subject: str,
+        body: str,
+        email_address: str) -> str:
+    """
+    Use this tool to send the generated report.
+
+    Args:
+        subject (Annotated[str, &quot;Email subject of report for email sending&quot;]): _description_
+        body (Annotated[str, &quot;Report content in markdown from reporting agent for email sending&quot;]):
+
+    Returns:
+        str: description
+    """
+    bod_in_html = markdown_to_html(body)
+    result = send_email_gmail(subject, bod_in_html, email_address)
+    return result
 
 
 if __name__ == "__main__":
