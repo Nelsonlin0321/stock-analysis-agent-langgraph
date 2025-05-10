@@ -32,63 +32,7 @@ def markdown_to_html(markdown_text: str, extras: Optional[list[str]] = None) -> 
         extras=extras
     )
 
-    # Add basic email-friendly styling
-    styled_html = f"""
-    <html>
-    <head>
-        <style>
-            body {{
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-            }}
-            table {{
-                border-collapse: collapse;
-                width: 100%;
-                margin: 20px 0;
-            }}
-            th, td {{
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }}
-            th {{
-                background-color: #f5f5f5;
-            }}
-            code {{
-                background-color: #f5f5f5;
-                padding: 2px 4px;
-                border-radius: 3px;
-                font-family: monospace;
-            }}
-            pre {{
-                background-color: #f5f5f5;
-                padding: 15px;
-                border-radius: 5px;
-                overflow-x: auto;
-            }}
-            h1, h2, h3, h4, h5, h6 {{
-                color: #2c3e50;
-                margin-top: 24px;
-                margin-bottom: 16px;
-            }}
-            hr {{
-                border: 0;
-                border-top: 1px solid #eee;
-                margin: 20px 0;
-            }}
-        </style>
-    </head>
-    <body>
-        {html}
-    </body>
-    </html>
-    """
-
-    return styled_html
+    return html
 
 
 @exponential_retry(retries=3, return_value_if_fail="Fail to send the email")
