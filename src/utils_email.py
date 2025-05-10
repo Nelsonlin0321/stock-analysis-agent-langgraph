@@ -1,0 +1,142 @@
+import os
+import markdown2
+from typing import Optional
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from .utils import exponential_retry
+import dotenv
+dotenv.load_dotenv()
+GMAIL = os.getenv("GMAIL")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+
+
+def markdown_to_html(markdown_text: str, extras: Optional[list[str]] = None) -> str:
+    """
+    Convert markdown text to HTML format suitable for email sending.
+
+    Args:
+        markdown_text (str): The markdown text to convert
+        extras (Optional[list[str]]): Additional markdown2 features to enable.
+            Default includes 'tables', 'fenced-code-blocks', and 'break-on-newline'
+
+    Returns:
+        str: HTML formatted text ready for email sending
+    """
+    if extras is None:
+        extras = ['tables', 'fenced-code-blocks', 'break-on-newline']
+
+    # Convert markdown to HTML
+    html = markdown2.markdown(
+        markdown_text,
+        extras=extras
+    )
+
+    # Add basic email-friendly styling
+    styled_html = f"""
+    <html>
+    <head>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }}
+            table {{
+                border-collapse: collapse;
+                width: 100%;
+                margin: 20px 0;
+            }}
+            th, td {{
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }}
+            th {{
+                background-color: #f5f5f5;
+            }}
+            code {{
+                background-color: #f5f5f5;
+                padding: 2px 4px;
+                border-radius: 3px;
+                font-family: monospace;
+            }}
+            pre {{
+                background-color: #f5f5f5;
+                padding: 15px;
+                border-radius: 5px;
+                overflow-x: auto;
+            }}
+            h1, h2, h3, h4, h5, h6 {{
+                color: #2c3e50;
+                margin-top: 24px;
+                margin-bottom: 16px;
+            }}
+            hr {{
+                border: 0;
+                border-top: 1px solid #eee;
+                margin: 20px 0;
+            }}
+        </style>
+    </head>
+    <body>
+        {html}
+    </body>
+    </html>
+    """
+
+    return styled_html
+
+
+@exponential_retry(retries=3, return_value_if_fail="Fail to send the email")
+def send_email_gmail(subject: str, body: str, email: str) -> str:
+    """
+    Send an email using Gmail SMTP server.
+
+    Args:
+        subject (str): Email subject
+        body (str): Email body in markdown format
+        email (str): Recipient email address
+
+    Returns:
+        str: Message ID of the sent email
+    """
+    html_body = markdown_to_html(body)
+
+    # Create message
+    msg = MIMEMultipart()
+    msg['From'] = GMAIL
+    msg['To'] = email
+    msg['Subject'] = subject
+
+    # Attach HTML content
+    msg.attach(MIMEText(html_body, 'html'))
+
+    try:
+        # Create SMTP session
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()  # Enable TLS
+
+        # Login to Gmail
+        server.login(GMAIL, GMAIL_APP_PASSWORD)
+
+        # Send email
+        server.send_message(msg)
+
+        # Close the connection
+        server.quit()
+
+        return f"Email Sent successfully gmail_{msg['Message-ID']}"
+    except Exception as e:
+        raise Exception(f"Failed to send email via Gmail: {str(e)}")
+
+
+if __name__ == "__main__":
+    subject = "Testing"
+    body = ""
+    email = "nelsonlin0321@gmail.com"
+    send_email_gmail(subject=subject, body=body, email=email)
+    # python -m src.utils_email
