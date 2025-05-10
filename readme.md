@@ -37,9 +37,7 @@ This project leverages the powerful combination of LangGraph and LangChain, chos
 
 ### Planning and Execution
 - Implements a directed graph structure for information processing
-- Maintains state between operations for context preservation
-- Uses message passing for inter-tool communication
-
+```markdown
         +-----------+          
         | __start__ |          
         +-----------+          
@@ -73,14 +71,11 @@ This project leverages the powerful combination of LangGraph and LangChain, chos
           +---------+          
           | __end__ |          
           +---------+
+```
 
 ### Dynamic Code Generation
 - Generates analysis code based on user requirements
 - Implements error handling and retry mechanisms
-- Supports multiple analysis types:
-  - Technical analysis
-  - Fundamental analysis
-  - News sentiment analysis
 
 ## Error Handling and Reliability
 
