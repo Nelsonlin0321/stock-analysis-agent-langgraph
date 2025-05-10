@@ -33,7 +33,7 @@ This project leverages the powerful combination of LangGraph and LangChain, chos
 
 - Implements a directed graph structure for information processing
 
-<img src='https://www.mermaidchart.com/raw/6a579ff6-aa7e-48b7-ae0e-264de058370b?theme=light&version=v0.1&format=svg' width=800, height=600></img>
+<img src='https://www.mermaidchart.com/raw/4ae51c3c-fee7-499f-8bb7-a7abbfccff61?theme=light&version=v0.1&format=svg' width=800, height=600></img>
 
 ### Dynamic Code Generation and Execution
 
